@@ -3,6 +3,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
+# comment out the below two lines once these resources are downloaded
 nltk.download('punkt')
 nltk.download('stopwords')
 
@@ -130,7 +131,7 @@ def remove_stopwords(text):
     return tok_list
 
 
-def tok_sequence(tok_list, min_length, window):
+def tok_sequence(tok_list, min_length, win):
     """
         - takes in tokens list and returns the tokens within a window
 
@@ -143,11 +144,37 @@ def tok_sequence(tok_list, min_length, window):
         eg: if min_length == 3 then len(token) < 3 gets dropped from the list.
     """
     tok_seq = []
-    
+    final_kw = []
+
     for w in tok_list:
         if len(w) > min_length:
             tok_seq.append(w)
 
-    return tok_seq
+    for i, k in enumerate(KW):
+
+        if k in tok_seq:
+            if i - win < 0 and i + win < len(tok_seq) - 1:
+                tw = tok_seq[0 : i + win]
+
+            elif i - win > 0 and i + win > len(tok_list) - 1:
+                tw = tok_seq[i - win : -1]
+            
+            elif i - win < 0 and i + win > len(tok_list) - 1:
+                tw = tok_seq
+
+            else:
+                tw = tok_seq[i - win : i + win]
+
+        else:
+            tw = []
+
+        if len(tw) == 0:
+            final_kw += tw
+            
+        else:
+            final_kw += [k]
+            
+    return final_kw
+
 
 
